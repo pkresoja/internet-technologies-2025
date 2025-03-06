@@ -2,17 +2,26 @@ const table = document.getElementById('table')
 const template = document.getElementById('template')
 
 if (table && template) {
-    axios('http://localhost:9000/api/airline')
+    showLoadingAnimation('We are retrieving the latest flight information.')
+    axios('https://flight.pequla.com/api/flight/list?type=departure')
         .then(rsp => {
-            rsp.data.forEach(airline=>{
+            rsp.data.forEach(flight => {
                 const copy = template.content.cloneNode(true)
-                copy.querySelector('.id').innerText = airline.id
-                copy.querySelector('.name').innerText = airline.name
-                copy.querySelector('.country').innerText = airline.countryOfOrigin
-                copy.querySelector('.btn').addEventListener('click', (e)=>{
-                    alert(airline.name)
+                copy.querySelector('.id').innerText = flight.id
+                copy.querySelector('.dest').innerText = flight.destination
+                copy.querySelector('.num').innerText = flight.flightNumber
+                copy.querySelector('.sch').innerText = formatDate(flight.scheduledAt)
+                copy.querySelector('.est').innerText = flight.estimatedAt ? formatDate(flight.estimatedAt) : 'On Time'
+                copy.querySelector('.btn').addEventListener('click', (e) => {
+                    const url = './details.html?id=' + flight.id
+                    window.location.href = url
+                    console.log(url)
                 })
                 table.appendChild(copy)
             })
+            Swal.close()
+        })
+        .catch(error => {
+            showErrorAlert()
         })
 }
