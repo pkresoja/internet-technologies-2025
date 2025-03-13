@@ -33,9 +33,10 @@ function showErrorAlert() {
         title: 'Error fetching data',
         text: 'There was an issue fetching the flight data.',
         customClass: {
+            confirmButton: 'btn btn-sm btn-primary',
             popup: 'bg-dark text-light',
             title: 'text-white',
-            content: 'text-light'
+            content: 'text-light',
         }
     })
 }
