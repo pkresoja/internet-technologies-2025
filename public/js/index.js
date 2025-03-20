@@ -3,7 +3,7 @@ const template = document.getElementById('template')
 
 if (table && template) {
     showLoadingAnimation('We are retrieving the latest flight information.')
-    axios('https://flight.pequla.com/api/flight/list?type=departure')
+    client.get('/flight')
         .then(rsp => {
             rsp.data.forEach(flight => {
                 const copy = template.content.cloneNode(true)

@@ -1,3 +1,11 @@
+const client = axios.create({
+    baseURL: 'http://localhost:8080/api',
+    headers: {
+        'Accept': 'application/json',
+        'X-Time': new Date().getTime()
+    }
+})
+
 const footer = document.getElementById('footer')
 if (footer)
     footer.innerHTML = `&copy; ${new Date().getFullYear()} Singidunum University - Internet Technologies and Web Services`

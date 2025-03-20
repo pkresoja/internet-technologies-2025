@@ -5,7 +5,7 @@ if (params.get('id') && card) {
     const id = params.get('id')
 
     showLoadingAnimation('We are retrieving the latest flight information.')
-    axios('https://flight.pequla.com/api/flight/' + id)
+    client.get('/flight/' + id)
         .then(rsp => {
             const img = document.getElementById('img')
             img.src = `https://img.pequla.com/destination/${rsp.data.destination.split(' ')[0].toLowerCase()}.jpg`

@@ -1,4 +1,4 @@
-package rs.ac.singidnum.ticket;
+package rs.ac.singidnum.ticket.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
