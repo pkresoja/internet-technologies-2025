@@ -1,4 +1,4 @@
-.flight-card{
+.flight-card {
     max-width: 1200px;
 
 }
@@ -9,6 +9,12 @@
 
 iframe {
     width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-container {
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
 }

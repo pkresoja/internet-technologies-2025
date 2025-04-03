@@ -3,6 +3,9 @@ const client = axios.create({
     headers: {
         'Accept': 'application/json',
         'X-Time': new Date().getTime()
+    },
+    validateStatus: (num) => {
+        return num === 200 || num === 204
     }
 })
 
@@ -34,12 +37,12 @@ function showLoadingAnimation(msg) {
     })
 }
 
-function showErrorAlert() {
+function showErrorAlert(msg = 'There was an issue fetching the data.') {
     Swal.close()
     Swal.fire({
         icon: 'error',
-        title: 'Error fetching data',
-        text: 'There was an issue fetching the flight data.',
+        title: 'An error occured',
+        text: msg,
         customClass: {
             confirmButton: 'btn btn-sm btn-primary',
             popup: 'bg-dark text-light',

@@ -24,6 +24,7 @@ public class AirlineService {
     }
 
     public void createAirline(Airline model) {
+        existsByNameOrAirline(model);
         Airline airline = new Airline();
         airline.setName(model.getName());
         airline.setCountry(model.getCountry());
@@ -33,6 +34,7 @@ public class AirlineService {
     }
 
     public void updateAirline(Integer id, Airline model) {
+        existsByNameOrAirline(model);
         Airline airline = getAirlineById(id).orElseThrow();
         airline.setName(model.getName());
         airline.setCountry(model.getCountry());
@@ -45,6 +47,14 @@ public class AirlineService {
         Airline airline = getAirlineById(id).orElseThrow();
         airline.setDeletedAt(LocalDateTime.now());
         repository.save(airline);
+    }
+
+    private void existsByNameOrAirline(Airline model) {
+        if (repository.findByWebsiteAndDeletedAtIsNull(model.getWebsite()).isPresent())
+            throw new RuntimeException("EXISTS_BY_WEBSITE");
+
+        if (repository.findByNameAndDeletedAtIsNull(model.getName()).isPresent())
+            throw new RuntimeException("EXISTS_BY_NAME");
     }
 
 }

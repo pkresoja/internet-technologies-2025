@@ -21,7 +21,5 @@ if (table && template) {
             })
             Swal.close()
         })
-        .catch(error => {
-            showErrorAlert()
-        })
+        .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
 }

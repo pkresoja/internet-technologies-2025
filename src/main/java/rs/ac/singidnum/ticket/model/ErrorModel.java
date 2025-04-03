@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ErrorModel {
+    private String name;
     private String message;
+    private String path;
     private LocalDateTime timestamp;
 }

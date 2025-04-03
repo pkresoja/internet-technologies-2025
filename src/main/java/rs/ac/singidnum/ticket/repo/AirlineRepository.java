@@ -13,4 +13,8 @@ public interface AirlineRepository extends JpaRepository<Airline, Integer> {
     List<Airline> findAllByDeletedAtIsNull();
 
     Optional<Airline> findByIdAndDeletedAtIsNull(Integer id);
+
+    Optional<Airline> findByWebsiteAndDeletedAtIsNull(String website);
+
+    Optional<Airline> findByNameAndDeletedAtIsNull(String name);
 }

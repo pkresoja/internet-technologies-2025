@@ -12,13 +12,11 @@ if (params.get('id') && card) {
             img.alt = rsp.data.destination
             document.getElementById('dest').innerText = rsp.data.destination
             document.getElementById('num').innerText = rsp.data.flightNumber
-            document.getElementById('sch').innerText = new Date(rsp.data.scheduledAt).toLocaleString('sr-RS') 
+            document.getElementById('sch').innerText = formatDate(rsp.data.scheduledAt)
             document.getElementById('plane').innerText = rsp.data.plane
             document.getElementById('gmaps').src = `https://www.google.com/maps?output=embed&q=${rsp.data.destination}`
             card.hidden = false
             Swal.close()
         })
-        .catch(error => {
-            showErrorAlert()
-        })
+        .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
 }
