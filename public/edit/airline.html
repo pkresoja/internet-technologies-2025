@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ITWS :: Details</title>
+    <title>ITWS :: Edit Airline</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -39,38 +39,32 @@
                 </div>
             </div>
         </nav>
-        <div id="flight" hidden>
-            <h3>Flight Details</h3>
-            <div class="card flight-card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-8">
-                        <img src="#" class="img-fluid rounded-start" id="img">
+        <div class="form-container" hidden>
+            <h3>Edit Airline</h3>
+            <div class="card mb-3">
+                <form class="p-3" id="data-form">
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID:</label>
+                        <input type="number" class="form-control" id="id" disabled>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card-body">
-                            <h3 class="card-title" id="dest"></h3>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                Flight Number: <strong id="num"></strong>
-                            </li>
-                            <li class="list-group-item">
-                                Scheduled At: <strong id="sch"></strong>
-                            </li>
-                            <li class="list-group-item">
-                                Plane Model: <strong id="plane"></strong>
-                            </li>
-                        </ul>
-                        <div class="card-body">
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                        </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name:</label>
+                        <input type="text" class="form-control" id="name">
                     </div>
-                </div>
-            </div>
-            <div class="flight-card">
-                <iframe class="mx-auto" width="auto" height="400" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade" id="gmaps"></iframe>
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country of Origin:</label>
+                        <input type="text" class="form-control" id="country">
+                    </div>
+                    <div class="mb-3">
+                        <label for="website" class="form-label">Website:</label>
+                        <input type="text" class="form-control" id="website">
+                    </div>
+                    <div class="mb-3">
+                        <label for="updated" class="form-label">Updated At:</label>
+                        <input type="text" class="form-control" id="updated" disabled>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
             </div>
         </div>
 
@@ -82,24 +76,36 @@
         <script src="/assets/js/global.js"></script>
         <script>
             const params = new URLSearchParams(location.search)
-            const card = document.getElementById('flight')
+            const card = document.querySelector('.form-container')
 
             if (params.get('id') && card) {
                 const id = params.get('id')
 
-                showLoadingAnimation('We are retrieving the latest flight information.')
-                client.get('/flight/' + id)
+                showLoadingAnimation('We are retrieving airline information.')
+                client.get('/airline/' + id)
                     .then(rsp => {
-                        const img = document.getElementById('img')
-                        img.src = `https://img.pequla.com/destination/${rsp.data.destination.split(' ')[0].toLowerCase()}.jpg`
-                        img.alt = rsp.data.destination
-                        document.getElementById('dest').innerText = rsp.data.destination
-                        document.getElementById('num').innerText = rsp.data.flightNumber
-                        document.getElementById('sch').innerText = formatDate(rsp.data.scheduledAt)
-                        document.getElementById('plane').innerText = rsp.data.plane
-                        document.getElementById('gmaps').src = `https://www.google.com/maps?output=embed&q=${rsp.data.destination}`
+                        document.getElementById('id').value = rsp.data.id
+                        document.getElementById('name').value = rsp.data.name
+                        document.getElementById('country').value = rsp.data.country
+                        document.getElementById('website').value = rsp.data.website
+                        document.getElementById('updated').value = formatDate(rsp.data.updatedAt ?? rsp.data.createdAt)
                         card.hidden = false
                         Swal.close()
+
+                        document.getElementById('data-form').addEventListener('submit', (e) => {
+                            e.preventDefault()
+                            client.request({
+                                url: `/airline/${id}`,
+                                method: 'put',
+                                data: {
+                                    name: document.getElementById('name').value,
+                                    country: document.getElementById('country').value,
+                                    website: document.getElementById('website').value
+                                }
+                            })
+                                .then(rsp => window.location.href = '/airlines.html')
+                                .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
+                        })
                     })
                     .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
             }

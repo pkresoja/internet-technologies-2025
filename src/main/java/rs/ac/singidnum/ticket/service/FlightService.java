@@ -14,14 +14,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FlightService {
 
-    private static final String API_BASE = "https://flight.pequla.com/api/flight";
-    private final RestClient client = RestClient.create();
+    private final RestClient client = RestClient.builder()
+            .baseUrl("https://flight.pequla.com/api/flight")
+            .defaultHeader("Accept", "application/json")
+            .defaultHeader("X-Name", "ITWS2025")
+            .build();
 
     public List<FlightModel> getFlights() {
         return client.get()
-                .uri(API_BASE + "/list?type=departure")
-                .header("Accept", "application/json")
-                .header("X-Name", "ITWS2025")
+                .uri("/list?type=departure")
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
@@ -30,9 +31,7 @@ public class FlightService {
     public Optional<FlightModel> getFlightById(Integer id) {
         try {
             return Optional.ofNullable(client.get()
-                    .uri(API_BASE + "/" + id)
-                    .header("Accept", "application/json")
-                    .header("X-Name", "ITWS2025")
+                    .uri("/" + id)
                     .retrieve()
                     .body(FlightModel.class)
             );

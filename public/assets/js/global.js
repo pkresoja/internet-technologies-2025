@@ -1,5 +1,5 @@
 const client = axios.create({
-    baseURL: 'http://localhost:8080/api',
+    baseURL: '/api',
     headers: {
         'Accept': 'application/json',
         'X-Time': new Date().getTime()
