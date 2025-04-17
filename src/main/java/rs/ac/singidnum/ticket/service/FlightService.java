@@ -2,6 +2,7 @@ package rs.ac.singidnum.ticket.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -38,5 +39,15 @@ public class FlightService {
         } catch (HttpClientErrorException.NotFound ex) {
             return Optional.empty();
         }
+    }
+
+    public List<FlightModel> getFlightsByIds(List<Integer> ids) {
+        return client.post()
+                .uri("/list")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(ids)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
     }
 }

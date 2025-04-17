@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ITWS :: Airlines</title>
+    <title>ITWS :: Tickets</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -30,35 +30,33 @@
                             <a class="nav-link" href="/index.html">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/airlines.html">Airlines</a>
+                            <a class="nav-link" href="/airlines.html">Airlines</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/types.html">Types</a>
+                            <a class="nav-link" href="./types.html">Types</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/tickets.html">Tickets</a>
+                            <a class="nav-link active" aria-current="page" href="/tickets.html">Tickets</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <h3>Airlines</h3>
-        <a href="/new/airline.html" class="btn btn-sm btn-primary">+ Add Airline</a>
+        <h3>Tickets</h3>
+        <a href="/new/ticket.html" class="btn btn-sm btn-primary">+ Add Ticket</a>
         <table class="table table-striped table-hover mt-3">
             <thead>
                 <tr>
-                    <th scope="col">
-                        <i class="fa-solid fa-hashtag"></i> ID
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-tags"></i> Name
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-flag"></i> Country of Origin
-                    </th>
-                    <th scope="col">
-                        <i class="fa-solid fa-paper-plane"></i> Actions
-                    </th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Destination</th>
+                    <th scope="col">Flight Number</th>
+                    <th scope="col">Scheduled At</th>
+                    <th scope="col">Airline</th>
+                    <th scope="col">Ticket Type</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Count</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody id="table">
@@ -69,13 +67,16 @@
     <template id="template">
         <tr>
             <th scope="row" class="id"></th>
-            <td class="name"></td>
-            <td class="country"></td>
+            <td class="dest"></td>
+            <td class="num"></td>
+            <td class="sch"></td>
+            <td class="airline"></td>
+            <td class="type"></td>
+            <td class="price"></td>
+            <td class="count"></td>
+            <td class="total"></td>
             <td>
                 <div class="btn-group">
-                    <button type="button" class="btn btn-sm btn-primary open" title="Open Link">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                    </button>
                     <button type="button" class="btn btn-sm btn-success edit" title="Edit">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
@@ -99,30 +100,33 @@
         const template = document.getElementById('template')
 
         if (table && template) {
-            showLoadingAnimation('We are retrieving the airline list for you.')
-            client.get('/airline')
+            showLoadingAnimation('We are retrieving the ticket list for you.')
+            client.get('/ticket')
                 .then(rsp => {
-                    rsp.data.forEach(airline => {
+                    rsp.data.forEach(ticket => {
                         const copy = template.content.cloneNode(true)
-                        copy.querySelector('.id').innerText = airline.id
-                        copy.querySelector('.name').innerText = airline.name
-                        copy.querySelector('.country').innerText = airline.country
-                        copy.querySelector('.open').addEventListener('click', (e) => {
-                            window.open(airline.website, '_blank')
-                        })
-                        copy.querySelector('.edit').addEventListener('click', (e) => {
-                            window.location.href = '/edit/airline.html?id=' + airline.id
-                        })
-                        copy.querySelector('.remove').addEventListener('click', (e) => {
-                            if (confirm('Are you sure?')) {
-                                client.request({
-                                    url: `/airline/${airline.id}`,
-                                    method: 'delete'
-                                })
-                                    .then(rsp => window.location.reload())
-                                    .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
-                            }
-                        })
+                        copy.querySelector('.id').innerText = ticket.id
+                        copy.querySelector('.dest').innerText = ticket.flight.destination
+                        copy.querySelector('.num').innerText = ticket.flight.flightNumber
+                        copy.querySelector('.sch').innerText = formatDate(ticket.flight.estimatedAt ?? ticket.flight.scheduledAt)
+                        copy.querySelector('.airline').innerText = ticket.airline.name
+                        copy.querySelector('.type').innerText = ticket.type.name
+                        copy.querySelector('.price').innerText = ticket.price
+                        copy.querySelector('.count').innerText = ticket.count
+                        copy.querySelector('.total').innerText = ticket.price * ticket.count
+                        // copy.querySelector('.edit').addEventListener('click', (e) => {
+                        //     window.location.href = '/edit/type.html?id=' + type.id
+                        // })
+                        // copy.querySelector('.remove').addEventListener('click', (e) => {
+                        //     if (confirm('Are you sure?')) {
+                        //         client.request({
+                        //             url: `/type/${type.id}`,
+                        //             method: 'delete'
+                        //         })
+                        //             .then(rsp => window.location.reload())
+                        //             .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
+                        //     }
+                        // })
                         table.appendChild(copy)
                     })
                     Swal.close()
