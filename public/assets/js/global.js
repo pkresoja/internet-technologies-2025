@@ -51,3 +51,21 @@ function showErrorAlert(msg = 'There was an issue fetching the data.') {
         }
     })
 }
+
+function destinationImage(dest) {
+    return `https://img.pequla.com/destination/${dest.split(' ')[0].toLowerCase()}.jpg`
+}
+
+async function createOptions(url, parent) {
+    const rsp = await client.get(url)
+    for (let obj of rsp.data) {
+        const opt = document.createElement('option')
+        opt.value = obj.id
+        opt.innerText = obj.name
+        parent.appendChild(opt)
+    }
+}
+
+function makeNumber(str) {
+    return str == '' ? 0: parseInt(str)
+}

@@ -16,7 +16,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" href="./index.html">
+                <a class="navbar-brand" href="/index.html">
                     <i class="fa-solid fa-plane-departure"></i> ITWS 2025
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -27,7 +27,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.html">Home</a>
+                            <a class="nav-link active" aria-current="page" href="/index.html">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/airlines.html">Airlines</a>
@@ -82,9 +82,14 @@
                 <span class="status"></span>
             </td>
             <td>
-                <button type="button" class="btn btn-sm btn-success" title="Open Details">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-success open" title="Open Details">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-primary new" title="Book Now">
+                        <i class="fa-solid fa-bookmark"></i>
+                    </button>
+                </div>
             </td>
         </tr>
     </template>
@@ -115,10 +120,13 @@
                         dot.classList = `fa-solid fa-circle text-${flight.estimatedAt ? 'warning' : 'success'}`
                         copy.querySelector('.status').innerText = flight.estimatedAt ? 'Delayed' : 'On Time'
 
-                        copy.querySelector('.btn').addEventListener('click', (e) => {
-                            const url = './details.html?id=' + flight.id
+                        copy.querySelector('.open').addEventListener('click', (e) => {
+                            const url = '/details.html?id=' + flight.id
                             window.location.href = url
-                            console.log(url)
+                        })
+                        copy.querySelector('.new').addEventListener('click', (e) => {
+                            const url = '/new/ticket.html?id=' + flight.id
+                            window.location.href = url
                         })
                         table.appendChild(copy)
                     })

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>ITWS :: Edit Airline</title>
+    <title>ITWS :: Edit Ticket</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
         integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -43,24 +43,37 @@
             </div>
         </nav>
         <div class="form-container" hidden>
-            <h3>Edit Airline</h3>
+            <h3>Edit TIcket</h3>
             <div class="card mb-3">
+                <img id="img" class="card-img-top">
                 <form class="p-3" id="data-form">
                     <div class="mb-3">
                         <label for="id" class="form-label">ID:</label>
                         <input type="number" class="form-control" id="id" disabled>
                     </div>
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name:</label>
-                        <input type="text" class="form-control" id="name">
+                        <label for="dest" class="form-label">Destination:</label>
+                        <input type="text" class="form-control" id="dest" disabled>
                     </div>
                     <div class="mb-3">
-                        <label for="country" class="form-label">Country of Origin:</label>
-                        <input type="text" class="form-control" id="country">
+                        <label for="sch" class="form-label">Scheduled At:</label>
+                        <input type="text" class="form-control" id="sch" disabled>
                     </div>
                     <div class="mb-3">
-                        <label for="website" class="form-label">Website:</label>
-                        <input type="text" class="form-control" id="website">
+                        <label for="airline" class="form-label">Airline:</label>
+                        <select class="form-select" id="airline"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="type" class="form-label">Type:</label>
+                        <select class="form-select" id="type"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price:</label>
+                        <input type="number" class="form-control" id="price">
+                    </div>
+                    <div class="mb-3">
+                        <label for="count" class="form-label">Ticket Count:</label>
+                        <input type="number" class="form-control" id="count">
                     </div>
                     <div class="mb-3">
                         <label for="updated" class="form-label">Updated At:</label>
@@ -80,37 +93,61 @@
         <script>
             const params = new URLSearchParams(location.search)
             const card = document.querySelector('.form-container')
+            const airline = document.getElementById('airline')
+            const type = document.getElementById('type')
 
-            if (params.get('id') && card) {
-                const id = params.get('id')
+            if (params.get('id') && card)
+                loadData(params.get('id'))
 
-                showLoadingAnimation('We are retrieving airline information.')
-                client.get('/airline/' + id)
-                    .then(rsp => {
-                        document.getElementById('id').value = rsp.data.id
-                        document.getElementById('name').value = rsp.data.name
-                        document.getElementById('country').value = rsp.data.country
-                        document.getElementById('website').value = rsp.data.website
-                        document.getElementById('updated').value = formatDate(rsp.data.updatedAt ?? rsp.data.createdAt)
-                        card.hidden = false
-                        Swal.close()
+            async function loadData(id) {
+                try {
+                    showLoadingAnimation('We are retrieving ticket information.')
+                    await createOptions('/airline', airline)
+                    await createOptions('/type', type)
 
-                        document.getElementById('data-form').addEventListener('submit', (e) => {
+                    const rsp = await client.get('/ticket/' + id)
+                    const img = document.getElementById('img')
+                    img.src = destinationImage(rsp.data.flight.destination)
+                    img.alt = rsp.data.flight.destination
+                    document.getElementById('id').value = rsp.data.id
+                    document.getElementById('dest').value = rsp.data.flight.destination
+                    document.getElementById('count').value = rsp.data.count
+                    document.getElementById('price').value = rsp.data.price
+                    document.getElementById('sch').value =
+                        formatDate(rsp.data.flight.estimatedAt ?? rsp.data.flight.scheduledAt)
+                    airline.value = rsp.data.airline.id
+                    type.value = rsp.data.type.id
+                    document.getElementById('updated').value =
+                        formatDate(rsp.data.updatedAt ?? rsp.data.createdAt)
+
+                    // Show card now
+                    card.hidden = false
+                    Swal.close()
+
+                    document.getElementById('data-form')
+                        .addEventListener('submit', (e) => {
                             e.preventDefault()
                             client.request({
-                                url: `/airline/${id}`,
+                                url: `/ticket/${id}`,
                                 method: 'put',
                                 data: {
-                                    name: document.getElementById('name').value,
-                                    country: document.getElementById('country').value,
-                                    website: document.getElementById('website').value
-                                }
+                                    flightId: rsp.data.flight.id,
+                                    price: makeNumber(document.getElementById('price').value),
+                                    count: makeNumber(document.getElementById('count').value),
+                                    type: {
+                                        id: type.value
+                                    },
+                                    airline: {
+                                        id: airline.value
+                                    }
+                            }
                             })
-                                .then(rsp => window.location.href = '/airlines.html')
+                                .then(rsp => window.location.href = '/tickets.html')
                                 .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
                         })
-                    })
-                    .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
+                } catch (e) {
+                    showErrorAlert(`${e.code}: ${e.message}`)
+                }
             }
         </script>
 </body>

@@ -16,7 +16,7 @@
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-body-tertiary mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" href="./index.html">
+                <a class="navbar-brand" href="/index.html">
                     <i class="fa-solid fa-plane-departure"></i> ITWS 2025
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -94,7 +94,7 @@
                 client.get('/flight/' + id)
                     .then(rsp => {
                         const img = document.getElementById('img')
-                        img.src = `https://img.pequla.com/destination/${rsp.data.destination.split(' ')[0].toLowerCase()}.jpg`
+                        img.src = destinationImage(rsp.data.destination)
                         img.alt = rsp.data.destination
                         document.getElementById('dest').innerText = rsp.data.destination
                         document.getElementById('num').innerText = rsp.data.flightNumber
