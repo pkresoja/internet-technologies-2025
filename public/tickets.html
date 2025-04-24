@@ -114,19 +114,19 @@
                         copy.querySelector('.price').innerText = ticket.price
                         copy.querySelector('.count').innerText = ticket.count
                         copy.querySelector('.total').innerText = ticket.price * ticket.count
-                        // copy.querySelector('.edit').addEventListener('click', (e) => {
-                        //     window.location.href = '/edit/type.html?id=' + type.id
-                        // })
-                        // copy.querySelector('.remove').addEventListener('click', (e) => {
-                        //     if (confirm('Are you sure?')) {
-                        //         client.request({
-                        //             url: `/type/${type.id}`,
-                        //             method: 'delete'
-                        //         })
-                        //             .then(rsp => window.location.reload())
-                        //             .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
-                        //     }
-                        // })
+                        copy.querySelector('.edit').addEventListener('click', (e) => {
+                            window.location.href = '/edit/ticket.html?id=' + ticket.id
+                        })
+                        copy.querySelector('.remove').addEventListener('click', (e) => {
+                            if (confirm('Are you sure?')) {
+                                client.request({
+                                    url: `/ticket/${ticket.id}`,
+                                    method: 'delete'
+                                })
+                                    .then(rsp => window.location.reload())
+                                    .catch(e => showErrorAlert(`${e.code}: ${e.message}`))
+                            }
+                        })
                         table.appendChild(copy)
                     })
                     Swal.close()
