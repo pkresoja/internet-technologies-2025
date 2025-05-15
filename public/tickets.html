@@ -76,6 +76,9 @@
             <td class="total"></td>
             <td>
                 <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-primary print" title="Print">
+                        <i class="fa-solid fa-print"></i>
+                    </button>
                     <button type="button" class="btn btn-sm btn-success edit" title="Edit">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
@@ -113,6 +116,9 @@
                         copy.querySelector('.price').innerText = ticket.price
                         copy.querySelector('.count').innerText = ticket.count
                         copy.querySelector('.total').innerText = ticket.price * ticket.count
+                        copy.querySelector('.print').addEventListener('click', (e) => {
+                            window.location.href = '/print.html?id=' + ticket.id
+                        })
                         copy.querySelector('.edit').addEventListener('click', (e) => {
                             window.location.href = '/edit/ticket.html?id=' + ticket.id
                         })
