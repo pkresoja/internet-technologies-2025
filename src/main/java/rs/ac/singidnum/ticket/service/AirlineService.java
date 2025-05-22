@@ -24,12 +24,7 @@ public class AirlineService {
     }
 
     public void createAirline(Airline model) {
-        if (repository.findByWebsiteAndDeletedAtIsNull(model.getWebsite()).isPresent())
-            throw new RuntimeException("EXISTS_BY_WEBSITE");
-
-        if (repository.findByNameAndDeletedAtIsNull(model.getName()).isPresent())
-            throw new RuntimeException("EXISTS_BY_NAME");
-
+        existsByNameOrWebsite(model);
         Airline airline = new Airline();
         airline.setName(model.getName());
         airline.setCountry(model.getCountry());
@@ -40,6 +35,9 @@ public class AirlineService {
 
     public void updateAirline(Integer id, Airline model) {
         Airline airline = getAirlineById(id).orElseThrow();
+        if (!airline.getName().equals(model.getName()) && !airline.getWebsite().equals(model.getWebsite())) {
+            existsByNameOrWebsite(model);
+        }
         airline.setName(model.getName());
         airline.setCountry(model.getCountry());
         airline.setWebsite(model.getWebsite());
@@ -53,4 +51,15 @@ public class AirlineService {
         repository.save(airline);
     }
 
+    public Boolean existsById(Integer id) {
+        return repository.existsByIdAndDeletedAtIsNull(id);
+    }
+
+    private void existsByNameOrWebsite(Airline model) {
+        if (repository.existsByWebsiteAndDeletedAtIsNull(model.getWebsite()))
+            throw new RuntimeException("EXISTS_BY_WEBSITE");
+
+        if (repository.existsByNameAndDeletedAtIsNull(model.getName()))
+            throw new RuntimeException("EXISTS_BY_NAME");
+    }
 }

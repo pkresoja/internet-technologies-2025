@@ -24,9 +24,7 @@ public class TypeService {
     }
 
     public void createType(Type model) {
-        if (repository.existsByNameAndDeletedAtIsNull(model.getName()))
-            throw new RuntimeException("TYPE_EXISTS_BY_NAME");
-
+        existsByName(model);
         Type type = new Type();
         type.setName(model.getName());
         type.setPrice(model.getPrice());
@@ -36,6 +34,9 @@ public class TypeService {
 
     public void updateType(Integer id, Type model) {
         Type type = getTypeById(id).orElseThrow();
+        if (!type.getName().equals(model.getName())) {
+            existsByName(model);
+        }
         type.setName(model.getName());
         type.setPrice(model.getPrice());
         type.setUpdatedAt(LocalDateTime.now());
@@ -46,5 +47,14 @@ public class TypeService {
         Type type = getTypeById(id).orElseThrow();
         type.setDeletedAt(LocalDateTime.now());
         repository.save(type);
+    }
+
+    public Boolean existsById(Integer id) {
+        return repository.existsByIdAndDeletedAtIsNull(id);
+    }
+
+    private void existsByName(Type model) {
+        if (repository.existsByNameAndDeletedAtIsNull(model.getName()))
+            throw new RuntimeException("EXISTS_BY_NAME");
     }
 }

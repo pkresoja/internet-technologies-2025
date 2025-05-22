@@ -15,4 +15,6 @@ public interface TypeRepository extends JpaRepository<Type, Integer> {
     Optional<Type> findByIdAndDeletedAtIsNull(Integer id);
 
     boolean existsByNameAndDeletedAtIsNull(String name);
+
+    Boolean existsByIdAndDeletedAtIsNull(Integer id);
 }

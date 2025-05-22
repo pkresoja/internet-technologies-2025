@@ -14,7 +14,9 @@ public interface AirlineRepository extends JpaRepository<Airline, Integer> {
 
     Optional<Airline> findByIdAndDeletedAtIsNull(Integer id);
 
-    Optional<Airline> findByWebsiteAndDeletedAtIsNull(String website);
+    Boolean existsByWebsiteAndDeletedAtIsNull(String website);
 
-    Optional<Airline> findByNameAndDeletedAtIsNull(String name);
+    Boolean existsByNameAndDeletedAtIsNull(String name);
+
+    Boolean existsByIdAndDeletedAtIsNull(Integer id);
 }

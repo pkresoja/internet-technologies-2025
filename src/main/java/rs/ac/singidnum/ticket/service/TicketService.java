@@ -18,6 +18,8 @@ public class TicketService {
 
     private final TicketRepository repository;
     private final FlightService flightService;
+    private final AirlineService airlineService;
+    private final TypeService typeService;
 
     public List<Ticket> getTickets() {
         List<Ticket> tickets = repository.findAllByDeletedAtIsNull();
@@ -39,7 +41,8 @@ public class TicketService {
 
     public Optional<Ticket> getTicketByIdWithFlight(Integer id) {
         Optional<Ticket> optional = getTicketById(id);
-        if (optional.isEmpty()) return Optional.empty();
+        if (optional.isEmpty())
+            return Optional.empty();
 
         Ticket ticket = optional.get();
         FlightModel flight = flightService.getFlightById(ticket.getFlightId()).orElseThrow();
@@ -51,6 +54,8 @@ public class TicketService {
     public void createTicket(Ticket model) {
         Ticket ticket = new Ticket();
         ticket.setFlightId(model.getFlightId());
+
+        checkIfAirlineAndTypeExist(model);
 
         Airline airline = new Airline();
         airline.setId(model.getAirline().getId());
@@ -71,6 +76,8 @@ public class TicketService {
         Ticket ticket = getTicketById(id).orElseThrow();
         ticket.setFlightId(model.getFlightId());
 
+        checkIfAirlineAndTypeExist(model);
+
         Airline airline = new Airline();
         airline.setId(model.getAirline().getId());
         ticket.setAirline(airline);
@@ -90,6 +97,14 @@ public class TicketService {
         Ticket ticket = getTicketById(id).orElseThrow();
         ticket.setDeletedAt(LocalDateTime.now());
         repository.save(ticket);
+    }
+
+    private void checkIfAirlineAndTypeExist(Ticket model) {
+        if (!airlineService.existsById(model.getAirline().getId()))
+            throw new RuntimeException("AIRLINE_NOT_FOUND");
+
+        if (!typeService.existsById(model.getType().getId()))
+            throw new RuntimeException("TYPE_NOT_FOUND");
     }
 
 }
