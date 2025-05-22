@@ -67,5 +67,5 @@ async function createOptions(url, parent) {
 }
 
 function makeNumber(str) {
-    return str == '' ? 0: parseInt(str)
+    return str == '' ? 0 : parseInt(str)
 }
